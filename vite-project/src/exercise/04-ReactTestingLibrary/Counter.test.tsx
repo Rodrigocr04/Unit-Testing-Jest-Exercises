@@ -18,12 +18,9 @@ implementation of the [DOM Testing Library](https://testing-library.com)
 (there's also a
 [React Native Testing Library](https://testing-library.com/react-native) and
 many others). 
-Here's a simple example of how to use this:
+Here's a simple example of how to use this: 
 */
 
-test("dummy test", () => {
-  expect(true).toBe(true);
-});
 
 // javascript
 /*
@@ -106,5 +103,27 @@ test('counter increments and decrements when the buttons are clicked', () => {
   expect(message.textContent).toBe('Current count: 0')
 })
 
-
 */
+
+import React from "react";
+import { render, fireEvent, screen } from "@testing-library/react";
+import Counter from "../03-ReactDom/Counter";
+
+test('counter increments and decrements when the buttons are clicked', () => {
+  render(<Counter />);
+
+  const incrementButton = screen.getByRole('button', { name: /increment/i });
+  const decrementButton = screen.getByRole('button', { name: /decrement/i });
+  const counterDisplay = screen.getByRole('heading');
+
+  // estado inicial
+  expect(counterDisplay.textContent).toBe('Counter: 0');
+
+  // incremento
+  fireEvent.click(incrementButton);
+  expect(counterDisplay.textContent).toBe('Counter: 1');
+
+  // decremento
+  fireEvent.click(decrementButton);
+  expect(counterDisplay.textContent).toBe('Counter: 0');
+});

@@ -1,9 +1,4 @@
 /* Exercise 3 ReactDom: Test using ReactDOM */
-
-test("dummy test", () => {
-  expect(true).toBe(true);
-});
-
 /*
 Background:
 When it comes to React components, our developer user will render our component
@@ -50,3 +45,55 @@ test('counter increments and decrements when the buttons are clicked', () => {
   })
 
   */
+
+import React, { act } from "react";
+import { createRoot, Root } from "react-dom/client";
+import Counter from "./Counter";
+  
+let container: HTMLDivElement | null = null;
+let root: Root | null = null;
+  
+beforeEach(() => {
+  // crear un contenedor para el componente
+  container = document.createElement("div");
+  document.body.appendChild(container);
+  root = createRoot(container);
+});
+  
+afterEach(() => {
+  // limpiar el DOM despues de cada prueba
+  act(() => {
+    root?.unmount();
+  });
+  container?.remove();
+  container = null;
+  root = null;
+});
+  
+test('counter increments and decrements when the buttons are clicked', () => {
+  // renderizar el componente
+  act(() => {
+    root?.render(<Counter />);
+  });
+    
+  // referencia a los botones y al display
+  const buttons = container!.querySelectorAll('button');
+  const incrementButton = buttons[0];
+  const decrementButton = buttons[1];
+  const counterDisplay = container!.querySelector('h1');
+    
+  // estado inicial esperado
+  expect(counterDisplay?.textContent).toBe('Counter: 0');
+    
+  // incrementar
+  act(() => {
+    incrementButton.click();
+  });
+  expect(counterDisplay?.textContent).toBe('Counter: 1');
+    
+  // decrementar
+  act(() => {
+    decrementButton.click();
+  });
+  expect(counterDisplay?.textContent).toBe('Counter: 0');
+});
